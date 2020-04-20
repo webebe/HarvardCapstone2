@@ -12,7 +12,7 @@ knitr::opts_chunk$set(fig.width=12, fig.height=8,echo = TRUE, warning=FALSE, mes
 ```
 
 ## Introduction
-This report describes the analysis steps performed on data containing observations of patients suffering or not suffering chronic kidney desease (CKD). The report consists of a methods section that explains the process and techniques used including data cleaning, data exploration and visualization, insights gained, and modeling approaches, results section that presents the modeling results and discusses the model performance and a conclusion section that gives a brief summary of the report, its limitations and future work.
+This report describes the analysis steps performed on data containing observations of patients suffering or not suffering from chronic kidney desease (CKD). The report consists of a methods section that explains the process and techniques used including data cleaning, data exploration and visualization, insights gained, and modeling approaches, results section that presents the modeling results and discusses the model performance and a conclusion section that gives a brief summary of the report, its limitations and future work.
 
 ```{r libraries, echo=FALSE}
 #R packages loaded - not all of them are nescessary for this analysis.
@@ -65,7 +65,7 @@ The used dataset was downloaded from the UCI - Machine Learning Repository - htt
 Credit goes to:
 Dua, D. and Graff, C. (2019). UCI Machine Learning Repository [http://archive.ics.uci.edu/ml]. Irvine, CA: University of California, School of Information and Computer Science.
 
-The dataset was obtained as follows:
+The dataset was loaded to the R environment as follows:
 ```{r download}
 #Read Dataset
 url_file<-"https://raw.githubusercontent.com/webebe/HarvardCapstone2/master/chronic_kidney_disease.txt"
@@ -76,7 +76,7 @@ chronic_kidney_disease<-read.csv(url(url_file))
 
 ## Data cleaning
 Many observations include NA values in several variables and obvious wrong entries, therefor the dataset was cleaned.
-Variables where factorized where possible in order to ease application of algorithms and enhance interpretability later. It should be noted that data cleaning was mainly done manually - variables where inspected or plotted and subsequently adapted.
+Variables where factorized where possible in order to ease application of algorithms and enhance interpretability later on. It should be noted that data cleaning was mainly done manually - variables where inspected or plotted and subsequently adapted.
 ```{r cleaning 1, echo=FALSE}
 dat<-chronic_kidney_disease
 #clean dataset: factorize variable where possible; adjust obviously wrong entries;
@@ -117,7 +117,7 @@ dat$class<-factor(dat$class)
 ```
 
 ## Dealing with missing values
-The following decission was made: Observations with more than 16% of missing values were removed. It was assumed that those were observations where either not enough information as available or something went wrong when inputting the data.
+The following decission was made: Observations with more than 16% of missing values were removed. That represents the 3rd quantile around the mean of missing values for each observation. It was assumed that those were observations where either not enough information was available or something went wrong when inputting the data.
 Further on mean substitution was chosen to handle missing values in continous variables, median substitution was applied to categorical variables. Mean and median values from the original dataset were used in order to avoid unwanted variations in the resulting analysis dataset.
 3 variables were completely removed because of numerous missing values and no way of knowing how to submit them in a meaningful way.
 ```{r datacleaning2, echo=FALSE}
@@ -126,7 +126,7 @@ x<-seq(1,nrow(dat))
 missingValues_mean<-sapply(x, function(x) mean(is.na(dat[x,])))
 boxplot(missingValues_mean, main = "Missing values mean")
 summary(missingValues_mean)
-#decision: Ignore observations with more than 16% missing values ->The 0.75% quantile
+#decision: Ignore observations with more than 16% missing values ->The 0.75 quantile
 missing_index<-which(missingValues_mean>quantile(missingValues_mean,0.75))
 dat_clean<-dat[-missing_index,]
 ```
@@ -305,8 +305,8 @@ dat_clean%>%ggplot(aes(y=hemo))+geom_point(aes(color=class,fill=class),stat="cou
 ```
 
 ## Machine learning algorithms and prediction
-The dataset will be split into a test and a training dataset. Algorithms will be trained on the train dataset and then
-applied to the test set. Performance of diffent model will be compared by accuracy, specificity and sensitivity.
+The dataset was split into a test and a training dataset. Algorithms were trained on the train dataset and then
+applied to the test set. Performance of different models were compared overall accuracy.
 ```{r traintest}
 #Create Test and training dataset
 test_index<-createDataPartition(dat_clean$class,times=1,p=0.2,list = FALSE)
